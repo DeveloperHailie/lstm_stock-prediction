@@ -9,6 +9,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint
 import tensorflow as tf
+from tensorflow.keras.models import Sequential
 tf.random.set_seed(777) #하이퍼파라미터 튜닝을 위해 실행시 마다 변수가 같은 초기값 가지게 하기
 
 
@@ -82,14 +83,16 @@ utils.shuffle(x_train, y_train)
 ## 모델 학습
 ## 모델 검증
 
-input = Input(shape=(sequence_length, 4))
-net = LSTM(units=512)(input) 
-net = Dense(units=512, activation='relu')(net)
-net = Dense(units=1)(net)
-model = Model(inputs=input, outputs=net)
+model = Sequential()
+# 7일 4개(시,고,저,종가)의 데이터
+model.add(LSTM(units=512, input_shape=(sequence_length, 4)))
+model.add(Dense(units=512, activation='relu'))
+# target 1개
+model.add(Dense(units=1))
 
 model.summary()
 
+# 연속적인 값 예측하므로 손실함수 mse 사용
 # 손실함수 : 평균제곱오차, 최적화 : adam
 model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.01))
 model.fit(x_train, y_train, epochs=50, validation_data=(x_test, y_test)) 
