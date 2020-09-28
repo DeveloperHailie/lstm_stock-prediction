@@ -121,10 +121,6 @@ for y in y_predict:
 
 import matplotlib.pyplot as plt
 
-g_y_test = y_test_inverse[::-1]
-g_y_predict = y_predict_inverse[::-1]
-#plt.plot(g_y_test)
-#plt.plot(g_y_predict)
 plt.plot( y_test_inverse)
 plt.plot(y_predict_inverse)
 
