@@ -84,8 +84,9 @@ utils.shuffle(x_train, y_train)
 ## 모델 검증
 
 model = Sequential()
-# 7일 4개(시,고,저,종가)의 데이터
+# 5일 4개(시,고,저,종가)의 데이터
 model.add(LSTM(units=512, input_shape=(sequence_length, 4)))
+model.add(Dense(units=512, activation='relu'))
 model.add(Dense(units=512, activation='relu'))
 # target 1개
 model.add(Dense(units=1))
@@ -94,9 +95,8 @@ model.summary()
 
 # 연속적인 값 예측하므로 손실함수 mse 사용
 # 손실함수 : 평균제곱오차, 최적화 : adam
-model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.01))
+model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.01), metrics=['accuracy'])
 model.fit(x_train, y_train, epochs=50, validation_data=(x_test, y_test)) 
-
 
 
 #y_test
@@ -116,14 +116,27 @@ y_predict_inverse = []
 for y in y_predict:
     inverse = transformer.inverse_transform([[0, 0, 0, y[0]]])
     y_inverse = inverse.flatten()[-1]
-    print(y_inverse)
+    #print(y_inverse)
     y_predict_inverse.append(y_inverse)
 
 import matplotlib.pyplot as plt
-
+'''
 plt.plot( y_test_inverse)
 plt.plot(y_predict_inverse)
 
 plt.xlabel('Time Period')
 plt.ylabel('Close')
 plt.show()
+'''
+
+answer = np.array(y_test_inverse)
+result = np.array(y_predict_inverse)
+zero = np.zeros(answer.shape)
+difference = answer - result
+plt.plot(difference)
+plt.plot(zero)
+plt.xlabel('Time Period')
+plt.ylabel('money')
+plt.show()
+
+
