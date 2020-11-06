@@ -14,7 +14,7 @@ tf.random.set_seed(777) #하이퍼파라미터 튜닝을 위해 실행시 마다
 
 
 ## 데이터 로드
-df = pd.read_csv('kakao.csv')
+df = pd.read_csv('..\\kakao.csv')
 
 ## 데이터 분석
 print("head")
@@ -32,15 +32,15 @@ print(df.describe())
 # 4 속성 이용
 df = df[['Open', 'High', 'Low', 'Close']]
 print(df)
-#df = df[::-1]
+df = df[::-1]
 
 # test용, train용 나눔 
 data = df.values
 print("data", len(data), data)
 train = data[:(len(data) - int(len(data)*0.3))]
 test = data[:int(len(data)*0.3)]
-train = train[::-1]
-test = test[::-1]
+#train = train[::-1]
+#test = test[::-1]
 print("test",len(test),test)
 print("train",len(train),train)
 
@@ -53,13 +53,14 @@ transformer = MinMaxScaler()
 train = transformer.fit_transform(train)
 test = transformer.transform(test)
 
-sequence_length = 7
+sequence_length = 5
 window_length = sequence_length + 1
 
 x_train = []
 y_train = []
+
 # window만큼(?) 자른 걸 배열에 넣어서 x_train, y_train에 넣어줄 것임
-for i in range(0, len(train) - window_length + 1):
+for i in range(0, len(test) - window_length + 1):
     # window = train의 i~(i+window_length-1)행(전체열)
     window = train[i:i + window_length, :]
     # x_train에 window의 마지막 행 제외한 나머지행(전체열) 더함
@@ -119,15 +120,15 @@ for y in y_predict:
     #print(y_inverse)
     y_predict_inverse.append(y_inverse)
 
+
 import matplotlib.pyplot as plt
-'''
 plt.plot( y_test_inverse)
 plt.plot(y_predict_inverse)
 
 plt.xlabel('Time Period')
 plt.ylabel('Close')
 plt.show()
-'''
+
 
 answer = np.array(y_test_inverse)
 result = np.array(y_predict_inverse)
@@ -138,5 +139,4 @@ plt.plot(zero)
 plt.xlabel('Time Period')
 plt.ylabel('money')
 plt.show()
-
 
